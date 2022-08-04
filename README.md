@@ -42,6 +42,8 @@ You must have the latest version of faas-cli for this step, check it with `faas-
 Then set up secret for Minio:
 
 ```bash
+export ACCESSKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.accesskey}" | base64 --decode; echo)
+export SECRETKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.secretkey}" | base64 --decode; echo)
 echo -n $SECRETKEY > ./secret-key.txt
 echo -n $ACCESSKEY > ./access-key.txt
 
