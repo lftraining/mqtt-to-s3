@@ -4,7 +4,7 @@ Store MQTT messages in S3 - part of the course [Introduction to Kubernetes on Ed
 
 This sample uses an [OpenFaaS MQTT-connector](https://github.com/openfaas/mqtt-connector) along with a Python function to receive JSON messages from MQTT and to store them in an S3 bucket.
 
-The use-case could be ingestion of IoT sensor data from edge devices. It is a starting point, and easy to modify for your own uses.
+Follow the instruction below to create infrastructure that receives ingestion of IoT sensor data from edge devices. It is a starting point, and easy to modify for your own uses.
 
 ## Installation
 
