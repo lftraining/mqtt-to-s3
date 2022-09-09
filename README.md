@@ -11,10 +11,7 @@ The use-case could be ingestion of IoT sensor data from edge devices. It is a st
 Install [arkade](https://get-arkade.dev), the open-source Kubernetes marketplace:
 
 ```bash
-# Move arkade into your $PATH
-curl -sLS https://dl.get-arkade.dev | sh
-
-# Or have arkade move itself into /usr/local/bin/
+# Have arkade move itself into /usr/local/bin/
 curl -sLS https://dl.get-arkade.dev | sudo sh
 ```
 
