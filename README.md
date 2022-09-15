@@ -4,7 +4,7 @@ Store MQTT messages in S3 - part of the course [Introduction to Kubernetes on Ed
 
 This sample uses an [OpenFaaS MQTT-connector](https://github.com/openfaas/mqtt-connector) along with a Python function to receive JSON messages from MQTT and to store them in an S3 bucket.
 
-Follow the instruction below to create infrastructure that receives ingestion of IoT sensor data from edge devices. It is a starting point, and easy to modify for your own uses.
+Follow the instruction below by running the commands in your terminal to create infrastructure that receives ingestion of IoT sensor data from edge devices. It is a starting point, and easy to modify for your own uses.
 
 ## Installation
 
@@ -19,19 +19,41 @@ Install [Minio](https://min.io/) and [OpenFaaS](https://www.openfaas.com/) to yo
 
 ```bash
 arkade install openfaas
-# Then follow the post-install instructions to log in and start
+# Then follow the post-install instructions below to log in and start
 # port-forwarding.
+
+export PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo) && export PATH=$PATH:$HOME/.arkade/bin/
+
+kubectl rollout status -n openfaas deploy/gateway 
+
+#Press Enter to push the port-forwarding process to the background after running the following command.
+kubectl port-forward -n openfaas svc/gateway 8080:8080 & 
+
+Install the CLI for OpenFaaS:
+arkade get faas-cli
+export PATH=$PATH:$HOME/.arkade/bin/
+
+#Log in to OpenFaas
+echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+
 
 arkade install minio
-# Then follow the post-install instructions to log in and start
+# Then follow the post-install instructions to log in by running the following commands and start
 # port-forwarding.
+export POD_NAME=$(kubectl get pods --namespace default -l "release=minio" -o jsonpath="{.items[0].metadata.name}")
+
+kubectl port-forward $POD_NAME 9000 --namespace default &     
+
+
+
 ```
 
-Get CLIs for the Minio client and OpenFaaS:
+Get CLIs for the Minio client:
 
 ```bash
 arkade get mc
-arkade get faas-cli
+# Add arkade binary directory to your PATH variable
+export PATH=$PATH:$HOME/.arkade/bin/
 ```
 
 You must have the latest version of faas-cli for this step, check it with `faas-cli version`
@@ -51,6 +73,7 @@ faas-cli secret create access-key --from-file ./access-key.txt --trim
 Setup `mc` to access Minio:
 
 ```bash
+#Press Enter after the following command to push the process into the background.
 kubectl port-forward svc/minio 9000:9000 &
 
 mc alias set minio http://127.0.0.1:9000 $(cat access-key.txt) $(cat secret-key.txt)
