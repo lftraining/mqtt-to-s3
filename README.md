@@ -170,14 +170,6 @@ mc ls minio/sensor-data
 
 You should see a number of .json files created for each message you create with the sender.
 
-Now check the contents of your S3 bucket with `mc`:
-
-```bash
-mc ls minio/sensor-data
-
-[2021-03-03 12:26:20 GMT]    10B a3832ae7-3381-41b7-a0f0-c53533728a1f.json
-```
-
 You can also retrieve the file to view it with:
 
 ```bash
