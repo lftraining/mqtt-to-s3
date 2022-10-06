@@ -29,7 +29,7 @@ kubectl rollout status -n openfaas deploy/gateway
 #Press Enter to push the port-forwarding process to the background after running the following command.
 kubectl port-forward -n openfaas svc/gateway 8080:8080 & 
 
-Install the CLI for OpenFaaS:
+#Install the CLI for OpenFaaS:
 arkade get faas-cli
 export PATH=$PATH:$HOME/.arkade/bin/
 
