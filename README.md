@@ -122,6 +122,8 @@ faas-cli template store pull python3-flask
 # deploy this function
 faas-cli deploy
 ```
+Install pip3 with your package manager. On Ubuntu, the following command will install pip3:
+$ sudo apt install python3-pip
 
 ## Testing the functions
 
@@ -135,16 +137,17 @@ First run:
 pip3 install paho-mqtt
 ```
 
+
 Then run `sender/send.py`
 
 ```bash
-$ python3 send.py '{"sensor_id": 1, "temperature_c": 50}'
+$ python3 sender/send.py '{"sensor_id": 1, "temperature_c": 50}'
 
 Connecting to test.mosquitto.org:1883
 Connected with result code 0
 Message "{"sensor_id": 1, "temperature_c": 53}" published to "openfaas-sensor-data"
 
-$ python3 send.py '{"sensor_id": 1, "temperature_c": 53}'
+$ python3 sender/send.py '{"sensor_id": 1, "temperature_c": 53}'
 ```
 
 Check the logs of the function to see that it was invoked:
