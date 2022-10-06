@@ -15,19 +15,17 @@ Install [arkade](https://get-arkade.dev), the open-source Kubernetes marketplace
 curl -sLS https://dl.get-arkade.dev | sudo sh
 ```
 
-Install [Minio](https://min.io/) and [OpenFaaS](https://www.openfaas.com/) to your Kubernetes cluster, and follow related post-install instructions:
+Install [Minio](https://min.io/) and [OpenFaaS](https://www.openfaas.com/) to your Kubernetes cluster:
 
 ```bash
 arkade install openfaas
-# Then follow the post-install instructions below to log in and start
-# port-forwarding.
 
 export PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo) && export PATH=$PATH:$HOME/.arkade/bin/
 
 kubectl rollout status -n openfaas deploy/gateway 
 
 #Press Enter to push the port-forwarding process to the background after running the following command.
-kubectl port-forward -n openfaas svc/gateway 8080:8080 & 
+kubectl port-forward -n openfaas svc/gateway 8080:8080 > openfaassvc.log 2>&1 & 
 
 #Install the CLI for OpenFaaS:
 arkade get faas-cli
@@ -38,14 +36,8 @@ echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 
 
 arkade install minio
-# Then follow the post-install instructions to log in by running the following commands and start
-# port-forwarding.
+# Log in with the following command.
 export POD_NAME=$(kubectl get pods --namespace default -l "release=minio" -o jsonpath="{.items[0].metadata.name}")
-
-kubectl port-forward $POD_NAME 9000 --namespace default &     
-
-
-
 ```
 
 Get CLIs for the Minio client:
@@ -70,11 +62,10 @@ faas-cli secret create secret-key --from-file ./secret-key.txt --trim
 faas-cli secret create access-key --from-file ./access-key.txt --trim
 ```
 
-Setup `mc` to access Minio:
+Forward ports for the minio service and setup `mc` to access Minio:
 
 ```bash
-#Press Enter after the following command to push the process into the background.
-kubectl port-forward svc/minio 9000:9000 &
+kubectl port-forward svc/minio 9000:9000 > ~/miniosvc.log 2>&1 &
 
 mc alias set minio http://127.0.0.1:9000 $(cat access-key.txt) $(cat secret-key.txt)
 
@@ -122,9 +113,10 @@ faas-cli template store pull python3-flask
 # deploy this function
 faas-cli deploy
 ```
-Install pip3 with your package manager. On Ubuntu, the following command will install pip3:
+Install pip3 with your package manager if it isn't already installed. On Ubuntu, the following command will install pip3:
+```
 $ sudo apt install python3-pip
-
+```
 ## Testing the functions
 
 Then publish an event to the "openfaas-sensor-data" topic on the iot.eclipse.org test server.
