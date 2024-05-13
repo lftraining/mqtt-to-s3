@@ -37,7 +37,8 @@ echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 
 arkade install minio
 # Log in with the following command.
-export POD_NAME=$(kubectl get pods --namespace default -l "release=minio" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=minio" -o jsonpath="{.items[0].metadata.name}")
+
 ```
 
 Get CLIs for the Minio client:
@@ -53,8 +54,8 @@ You must have the latest version of faas-cli for this step, check it with `faas-
 Then set up secret for Minio:
 
 ```bash
-export ACCESSKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.accesskey}" | base64 --decode; echo)
-export SECRETKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.secretkey}" | base64 --decode; echo)
+export ACCESSKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.root-user}" | base64 --decode; echo)
+export SECRETKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.root-password}" | base64 --decode; echo)
 echo -n $SECRETKEY > ./secret-key.txt
 echo -n $ACCESSKEY > ./access-key.txt
 
